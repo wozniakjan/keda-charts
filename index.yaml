@@ -47,29 +47,6 @@ entries:
     - https://kedify.github.io/charts/keda-v2.14.0-kedify1.tgz
     version: v2.14.0-kedify1
   - apiVersion: v2
-    appVersion: 2.14.0
-    created: "2024-04-26T09:50:12.199169901Z"
-    description: Event-based autoscaler for workloads on Kubernetes
-    digest: df3de463ad048c10fec3a2e0b1d604f140ae7db9d717913a6e04f1e66985c04d
-    home: https://github.com/kedacore/keda
-    icon: https://raw.githubusercontent.com/kedacore/keda/main/images/keda-logo-500x500-white.png
-    kubeVersion: '>=v1.23.0-0'
-    maintainers:
-    - email: ahmels@microsoft.com
-      name: Ahmed ElSayed
-    - email: jorge_turrado@hotmail.es
-      name: Jorge Turrado
-    - email: kerkhove.tom@gmail.com
-      name: Tom Kerkhove
-    - email: zbynek@kedify.io
-      name: Zbynek Roubalik
-    name: keda
-    sources:
-    - https://github.com/kedacore/keda
-    urls:
-    - https://kedify.github.io/charts/keda-v2.14.0-kedify.tgz
-    version: v2.14.0-kedify
-  - apiVersion: v2
     appVersion: 2.13.1
     created: "2024-04-22T15:15:58.927449657Z"
     description: Event-based autoscaler for workloads on Kubernetes
