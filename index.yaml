@@ -3,9 +3,9 @@ entries:
   external-scaler-azure-cosmos-db:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2024-06-20T14:59:26.718086085Z"
+    created: "2024-07-02T11:00:26.606322901Z"
     description: Event-based autoscaler for Azure Cosmos DB change feed consumer applications
-    digest: ee747784d8f665e63dd2511a5a38205814aa068e32b1ce0f41ca67d817cfb8ea
+    digest: 9779e80d9a16f3fce6bd7b66427e921f5e6514f37af1f04c46a35ba70a627da2
     home: https://github.com/kedacore/external-scaler-azure-cosmos-db
     kubeVersion: '>=v1.17.0-0'
     maintainers:
@@ -23,6 +23,29 @@ entries:
     - https://kedify.github.io/charts/external-scaler-azure-cosmos-db-0.1.0.tgz
     version: 0.1.0
   keda:
+  - apiVersion: v2
+    appVersion: 2.14.0
+    created: "2024-07-02T11:00:26.611975146Z"
+    description: Event-based autoscaler for workloads on Kubernetes
+    digest: 31d04f1f4ea53ef0c8506de2d9f3fd766047f7066c8f25a07d87cecb6c2f93eb
+    home: https://github.com/kedacore/keda
+    icon: https://raw.githubusercontent.com/kedacore/keda/main/images/keda-logo-500x500-white.png
+    kubeVersion: '>=v1.23.0-0'
+    maintainers:
+    - email: ahmels@microsoft.com
+      name: Ahmed ElSayed
+    - email: jorge_turrado@hotmail.es
+      name: Jorge Turrado
+    - email: kerkhove.tom@gmail.com
+      name: Tom Kerkhove
+    - email: zbynek@kedify.io
+      name: Zbynek Roubalik
+    name: keda
+    sources:
+    - https://github.com/kedacore/keda
+    urls:
+    - https://kedify.github.io/charts/keda-v2.14.2-2.tgz
+    version: v2.14.2-2
   - apiVersion: v2
     appVersion: 2.14.0
     created: "2024-06-20T14:59:26.724771241Z"
@@ -233,9 +256,9 @@ entries:
   keda-add-ons-http:
   - apiVersion: v2
     appVersion: 0.8.0
-    created: "2024-06-20T14:59:26.719566273Z"
+    created: "2024-07-02T11:00:26.607334371Z"
     description: Event-based autoscaler for HTTP workloads on Kubernetes
-    digest: 3273e221b60c1347d1f97688d7c653cd2a1d34fbf7152e72783e7e468909392b
+    digest: 68e350973dcb8c849502c2d3a3939ced6b2f02a836524e76311a9ff81cbb17f5
     home: https://github.com/kedacore/http-add-on
     kubeVersion: '>=v1.23.0-0'
     maintainers:
@@ -277,4 +300,4 @@ entries:
     urls:
     - https://kedify.github.io/charts/keda-add-ons-http-0.7.0.tgz
     version: 0.7.0
-generated: "2024-06-20T14:59:26.71760927Z"
+generated: "2024-07-02T11:00:26.605881055Z"
