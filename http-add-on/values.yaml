@@ -41,6 +41,9 @@ logging:
     # -- Logging time encoding for KEDA http-add-on Interceptor.
     # allowed values are `epoch`, `millis`, `nano`, `iso8601`, `rfc3339` or `rfc3339nano`
     timeEncoding: rfc3339
+    # tls config
+    tls:
+      allowCertsFromSecrets: true
 
 # operator-specific configuration values
 operator:
