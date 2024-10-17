@@ -8,18 +8,6 @@ metadata:
     control-plane: kedify-agent
 rules:
 - apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
   - coordination.k8s.io
   resources:
   - leases
@@ -62,6 +50,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 rules:
 
+{{- if .Values.agent.rbac.selfUpdates }}
 # Kedify agent needs to be able to update its own container image
 - apiGroups:
   - apps
@@ -73,6 +62,7 @@ rules:
   - watch
   - update
   - patch
+{{- end }}
 
 #  Cruding own CRD that holds the helm chart values for Keda installation, but also enabling disabling telemetry
 - apiGroups:
@@ -82,13 +72,13 @@ rules:
   verbs:
   - "*"
 
+{{- if or .Values.agent.rbac.shouldBeAbleToInstallKeda .Values.agent.rbac.shouldBeAbleToInstallHttpAddon }}
 # Save/load state of each installed resource and its version
 - apiGroups:
   - ""
   resources:
   - configmaps
   verbs:
-  - create
   - delete
   - get
   - patch
@@ -106,7 +96,6 @@ rules:
   - watch
 
 # Kedify needs to be able to uninstall itself
-# todo: maybe hide it behind a flag
 - apiGroups:
   - ""
   resources:
@@ -137,6 +126,8 @@ rules:
   - update
   resourceNames:
   - kedify-agent
+{{- end }}
+
 - apiGroups:
   - ""
   resources:
@@ -194,7 +185,7 @@ rules:
   - get
   - list
   - watch
-
+{{- if .Values.agent.rbac.metrics }}
 - apiGroups:
   - ""
   resources:
@@ -210,6 +201,7 @@ rules:
   verbs:
   - get
   - list
+{{- end }}
 
 - apiGroups:
   - apps
@@ -274,30 +266,6 @@ rules:
   - "*"
   verbs:
   - "*"
-- apiGroups:
-  - apiregistration.k8s.io
-  resources:
-  - apiservices
-  verbs:
-  - delete
-  - get
-  - patch
-  - update
-  resourceNames:
-  - v1alpha1.keda.kedify.io
-  - v1alpha1.keda.sh
-  - v1alpha1.http.keda.sh
-  - v1alpha1.eventing.keda.sh
-  - v1beta1.external.metrics.k8s.io
-  - keda-operator-metrics-apiserver
-- apiGroups:
-  - apiregistration.k8s.io
-  resources:
-  - apiservices
-  verbs:
-  - list
-  - create
-  - watch
 
 # Kedify needs to configure envoy proxy also in other namespaces & deploy it
 - apiGroups:
@@ -402,6 +370,7 @@ rules:
   - update
   - watch
 
+{{- if or .Values.agent.rbac.shouldBeAbleToInstallKeda .Values.agent.rbac.shouldBeAbleToInstallHttpAddon }}
 # Kedify needs to be able to uninstall itself
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -433,6 +402,7 @@ rules:
   - update
   resourceNames:
   - kedify-manager-rolebinding
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

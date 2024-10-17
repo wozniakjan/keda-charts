@@ -6,7 +6,7 @@ agent:
   # you should already have this
   apiKey: ""
 # agentId: abcd1234-ab34-..
-  kedifyServer: api.kedify.io
+  kedifyServer: service.kedify.io:443
 
   # Can be one of 'debug', 'info', 'error', or any integer value > 0
   # which corresponds to custom debug levels of increasing verbosity
@@ -30,6 +30,10 @@ agent:
     create: true
     # set this to true if the agent should be able to install the KEDA
     shouldBeAbleToInstallKeda: false
+    # if true, rbac necessary for self-updates is added
+    selfUpdates: false
+    # if true, rbac necessary for metrics collection is added
+    metrics: false
     # set this to true if the agent should be able to install the KEDA http addon
     shouldBeAbleToInstallHttpAddon: false
 
