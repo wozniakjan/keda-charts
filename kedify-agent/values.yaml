@@ -30,12 +30,24 @@ agent:
     create: true
     # set this to true if the agent should be able to install the KEDA
     shouldBeAbleToInstallKeda: false
+    # set this to true if the agent should be able to install the KEDA http addon
+    shouldBeAbleToInstallHttpAddon: false
     # if true, rbac necessary for self-updates is added
     selfUpdates: false
     # if true, rbac necessary for metrics collection is added
-    metrics: false
-    # set this to true if the agent should be able to install the KEDA http addon
-    shouldBeAbleToInstallHttpAddon: false
+    readMetrics: false
+    # if true, rbac necessary for reading stateful sets is added
+    readStatefulSets: false
+    # if true, rbac necessary for reading HPAs (horizontal pod autoscalers) is added
+    readHpas: false
+    # if true, rbac necessary for reading Nodes is added
+    readNodes: false
+    # if true, rbac necessary for reading Pods is added
+    readPods: true
+    # if true, rbac necessary for reading Deployments is added
+    readDeploymentsClusterwide: true
+    # if true, rbac necessary for reading Services is added
+    readServices: true
 
   serviceAccount:
     # Specifies whether a service account should be created

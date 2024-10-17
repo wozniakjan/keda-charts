@@ -176,7 +176,7 @@ kind: ClusterRole
 metadata:
   name: kedify-manager-role
 rules:
-
+{{- if .Values.agent.rbac.readNodes }}
 - apiGroups:
   - ""
   resources:
@@ -185,7 +185,8 @@ rules:
   - get
   - list
   - watch
-{{- if .Values.agent.rbac.metrics }}
+{{- end }}
+{{- if .Values.agent.rbac.readPods }}
 - apiGroups:
   - ""
   resources:
@@ -194,6 +195,8 @@ rules:
   - get
   - list
   - watch
+{{- end }}
+{{- if .Values.agent.rbac.readMetrics }}
 - apiGroups:
   - metrics.k8s.io
   resources:
@@ -202,7 +205,7 @@ rules:
   - get
   - list
 {{- end }}
-
+{{- if .Values.agent.rbac.readDeploymentsClusterwide }}
 - apiGroups:
   - apps
   resources:
@@ -210,7 +213,8 @@ rules:
   verbs:
   - get
   - list
-
+{{- end }}
+{{- if .Values.agent.rbac.readHpas }}
 - apiGroups:
   - autoscaling
   resources:
@@ -219,7 +223,8 @@ rules:
   - get
   - list
   - watch
-
+{{- end }}
+{{- if .Values.agent.rbac.readStatefulSets }}
 - apiGroups:
   - apps
   resources:
@@ -228,7 +233,7 @@ rules:
   - get
   - list
   - watch
-
+{{- end }}
 # required by Kedify to be able to crud CR(D)s related to KEDA
 - apiGroups:
   - apiextensions.k8s.io
@@ -316,6 +321,7 @@ rules:
   - patch
   - update
   - watch
+{{- if .Values.agent.rbac.readServices }}
 - apiGroups:
   - ""
   resources:
@@ -327,6 +333,7 @@ rules:
   - update
   - create
   - watch
+{{- end }}
 - apiGroups:
   - gateway.networking.k8s.io
   resources:

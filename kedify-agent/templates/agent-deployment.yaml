@@ -56,17 +56,17 @@ spec:
               value: {{ .Values.agent.noBanner | quote }}
       {{- end }}
             - name: RBAC_READ_NODES
-              value: "true"
+              value: {{ .Values.agent.rbac.readNodes | quote }}
             - name: RBAC_READ_PODS
-              value: "true"
+              value: {{ .Values.agent.rbac.readPods | quote }}
             - name: RBAC_READ_DEPLOYMENTS_CLUSTERWIDE
-              value: "true"
+              value: {{ .Values.agent.rbac.readDeploymentsClusterwide | quote }}
             - name: RBAC_READ_SERVICES
-              value: "true"
+              value: {{ .Values.agent.rbac.readServices | quote }}
             - name: RBAC_READ_HPAS
-              value: "true"
+              value: {{ .Values.agent.rbac.readHpas | quote }}
             - name: RBAC_READ_STATEFUL_SETS
-              value: "true"
+              value: {{ .Values.agent.rbac.readStatefulSets | quote }}
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.agent.pullPolicy }}
           livenessProbe:
