@@ -12,6 +12,10 @@ agent:
   # which corresponds to custom debug levels of increasing verbosity
   logLevel: info
 
+  # should the KedifyConfiguration and ScalingPolicy CRDs be also part of the release
+  createCrds: true
+  createKedifyConfiguration: true
+
   image:
     tag: "v0.0.53"
     repository: ghcr.io/kedify/agent
@@ -35,7 +39,7 @@ agent:
     # if true, rbac necessary for self-updates is added
     selfUpdates: false
     # if true, rbac necessary for metrics collection is added
-    readMetrics: false
+    readMetrics: true
     # if true, rbac necessary for reading stateful sets is added
     readStatefulSets: false
     # if true, rbac necessary for reading HPAs (horizontal pod autoscalers) is added

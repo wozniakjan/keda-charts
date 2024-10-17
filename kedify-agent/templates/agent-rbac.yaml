@@ -156,22 +156,6 @@ subjects:
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: kedify-manager-rolebinding
-  namespace: {{ .Release.Namespace }}
-  labels:
-    control-plane: kedify-agent
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: kedify-manager-role
-subjects:
-- kind: ServiceAccount
-  name: kedify-agent
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: kedify-manager-role
@@ -197,6 +181,14 @@ rules:
   - watch
 {{- end }}
 {{- if .Values.agent.rbac.readMetrics }}
+- apiGroups:
+    - ""
+  resources:
+    - namespaces
+  verbs:
+    - list
+    - watch
+    - get
 - apiGroups:
   - metrics.k8s.io
   resources:
@@ -293,13 +285,6 @@ rules:
   - kedify-proxy
 
 # Kedify needs to be able to uninstall itself
-- apiGroups:
-    - ""
-  resources:
-    - namespaces
-  verbs:
-    - list
-    - watch
 - apiGroups:
     - rbac.authorization.k8s.io
   resources:
