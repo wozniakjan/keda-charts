@@ -1,0 +1,449 @@
+{{- if .Values.agent.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kedify-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    control-plane: kedify-agent
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kedify-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    control-plane: kedify-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kedify-leader-election
+subjects:
+- kind: ServiceAccount
+  name: kedify-agent
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kedify-manager-role
+  namespace: {{ .Release.Namespace }}
+rules:
+
+# Kedify agent needs to be able to update its own container image
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+
+#  Cruding own CRD that holds the helm chart values for Keda installation, but also enabling disabling telemetry
+- apiGroups:
+  - install.kedify.io
+  resources:
+  - KedifyConfiguration
+  verbs:
+  - "*"
+
+# Save/load state of each installed resource and its version
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - delete
+  - get
+  - patch
+  - update
+  resourceNames:
+  - kedify-state
+  - kedify-http-addon-state
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - list
+  - watch
+
+# Kedify needs to be able to uninstall itself
+# todo: maybe hide it behind a flag
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - update
+  resourceNames:
+  - keda
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  verbs:
+  - get
+  - delete
+  - update
+  resourceNames:
+  - kedify-leader-election
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+  - delete
+  - update
+  resourceNames:
+  - kedify-agent
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - delete
+  - update
+  resourceNames:
+  - kedify-agent
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kedify-manager-rolebinding
+  namespace: {{ .Release.Namespace }}
+  labels:
+    control-plane: kedify-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kedify-manager-role
+subjects:
+- kind: ServiceAccount
+  name: kedify-agent
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kedify-manager-rolebinding
+  namespace: {{ .Release.Namespace }}
+  labels:
+    control-plane: kedify-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kedify-manager-role
+subjects:
+- kind: ServiceAccount
+  name: kedify-agent
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kedify-manager-role
+rules:
+
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - get
+  - list
+  - watch
+
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+
+# required by Kedify to be able to crud CR(D)s related to KEDA
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - delete
+  - get
+  - patch
+  - update
+  resourceNames:
+  - kedifyconfigurations.install.kedify.io
+  - scalingpolicies.keda.kedify.io
+  - clustertriggerauthentications.keda.sh
+  - cloudeventsources.eventing.keda.sh
+  - clustercloudeventsources.eventing.keda.sh
+  - httpscaledobjects.http.keda.sh
+  - scaledjobs.keda.sh
+  - scaledobjects.keda.sh
+  - triggerauthentications.keda.sh
+- apiGroups:
+    - apiextensions.k8s.io
+  resources:
+    - customresourcedefinitions
+  verbs:
+    - create
+- apiGroups:
+  - keda.sh
+  - http.keda.sh
+  - eventing.keda.sh
+  - install.kedify.io
+  - keda.kedify.io
+  resources:
+  - "*"
+  verbs:
+  - "*"
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - delete
+  - get
+  - patch
+  - update
+  resourceNames:
+  - v1alpha1.keda.kedify.io
+  - v1alpha1.keda.sh
+  - v1alpha1.http.keda.sh
+  - v1alpha1.eventing.keda.sh
+  - v1beta1.external.metrics.k8s.io
+  - keda-operator-metrics-apiserver
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - list
+  - create
+  - watch
+
+# Kedify needs to configure envoy proxy also in other namespaces & deploy it
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - list
+  - watch
+  - create
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - delete
+  - update
+  resourceNames:
+  - kedify-proxy
+
+# Kedify needs to be able to uninstall itself
+- apiGroups:
+    - ""
+  resources:
+    - namespaces
+  verbs:
+    - list
+    - watch
+- apiGroups:
+    - rbac.authorization.k8s.io
+  resources:
+    - roles
+  verbs:
+    - list
+    - watch
+    - delete
+
+# required by Kedify agent to be able to do the auto-wiring of communication from {VirtualService, Service, HttpRoute, Ingress, Route}'s original workload to Interceptor
+# Interceptor then forwards the traffic to the original workload (used for activation phase when there is no replicas)
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - virtualservices
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - create
+  - watch
+- apiGroups:
+  - gateway.networking.k8s.io
+  resources:
+  - httproutes
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - gateway.networking.k8s.io
+  resources:
+  - referencegrants
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+
+# Kedify needs to be able to uninstall itself
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  - clusterroles
+  - clusterrolebindings
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  verbs:
+  - get
+  - delete
+  - update
+  resourceNames:
+  - kedify-manager-role
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterrolebindings
+  verbs:
+  - get
+  - delete
+  - update
+  resourceNames:
+  - kedify-manager-rolebinding
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kedify-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kedify-manager-role
+subjects:
+- kind: ServiceAccount
+  name: kedify-agent
+  namespace: {{ .Release.Namespace }}
+{{- end }}
