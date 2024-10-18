@@ -16,6 +16,7 @@ data:
       name: kedify
       namespace: {{ .Release.Namespace }}
     spec:
+      clusterName: {{ .Values.clusterName }}
       kedaInstallations:
       - agentAutoUpdate: false
         httpAddonHelm:

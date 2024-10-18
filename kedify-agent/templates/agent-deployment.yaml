@@ -75,6 +75,8 @@ spec:
               value: {{ or .Values.agent.rbac.shouldBeAbleToInstallKeda .Values.agent.rbac.shouldBeAbleToInstallHttpAddon | quote }}
             - name: RBAC_MANAGE_INGRESS_AUTOWIRE
               value: {{ .Values.agent.rbac.ingressAutoWire | quote }}
+            - name: RBAC_MANAGE_KEDIFY_CONFIG
+              value: {{ .Values.agent.rbac.kedifyConfig | quote }}
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.agent.pullPolicy }}
           livenessProbe:
