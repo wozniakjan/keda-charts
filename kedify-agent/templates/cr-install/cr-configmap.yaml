@@ -20,17 +20,11 @@ data:
       kedaInstallations:
       - agentAutoUpdate: false
         httpAddonHelm:
-          appVersion: v0.8.0-15
-          autoUpdate: LatestReleased
-          chartVersion: v0.8.0-8
-          enabled: false
-          values: |
+          enabled: true
+          values: |-
             ---
         kedaHelm:
-          appVersion: v2.15.0-0
-          autoUpdate: LatestReleased
-          chartVersion: v2.15.0-0
-          enabled: false
+          enabled: true
           values: |-
             ---
         mode: Disabled
