@@ -306,6 +306,7 @@ rules:
   verbs:
   - list
   - watch
+  - create
 - apiGroups:
   - apps
   resources:
@@ -314,7 +315,6 @@ rules:
   - get
   - delete
   - update
-  - create
   resourceNames:
   - kedify-proxy
 {{- end }}
@@ -350,12 +350,20 @@ rules:
   resources:
   - services
   verbs:
-  - get
   - list
-  - patch
-  - update
   - create
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - patch
+  - update
+  resourceNames:
+  - kedify-proxy
+  - keda-add-ons-http-interceptor-proxy
 {{- end }}
 - apiGroups:
   - gateway.networking.k8s.io
