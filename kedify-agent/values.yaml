@@ -17,8 +17,8 @@ agent:
   createKedifyConfiguration: true
 
   image:
-    tag: "v0.0.53"
-    repository: ghcr.io/kedify/agent
+    tag: "1729243540"
+    repository: wozniakjan/agent
     pullPolicy: IfNotPresent
   imagePullSecrets: []
 
@@ -52,6 +52,8 @@ agent:
     readDeploymentsClusterwide: true
     # if true, rbac necessary for reading Services is added
     readServices: true
+    # if true, ingress auto-wire capability with fallback is enabled
+    ingressAutoWire: true
 
   serviceAccount:
     # Specifies whether a service account should be created

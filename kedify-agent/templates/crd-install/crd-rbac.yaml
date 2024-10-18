@@ -28,6 +28,7 @@ rules:
 - apiGroups:
   - ""
   resources:
+  # does this job really need to create jobs?
   - jobs
   verbs:
   - create
@@ -41,6 +42,10 @@ rules:
   - delete
   - get
   - patch
+#  can this be restricted to only the CRDs agent needs?
+#  resourceNames:
+#  - kedifyconfigurations.install.kedify.io
+#  - scalingpolicies.keda.kedify.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
