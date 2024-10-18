@@ -17,8 +17,8 @@ agent:
   createKedifyConfiguration: true
 
   image:
-    tag: "1729243540"
-    repository: wozniakjan/agent
+    tag: "v0.1.0"
+    repository: ghcr.io/kedify/agent
     pullPolicy: IfNotPresent
   imagePullSecrets: []
 

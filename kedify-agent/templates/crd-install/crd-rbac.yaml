@@ -26,26 +26,22 @@ metadata:
     role: {{ include "crdInstallSelector" . | quote }}
 rules:
 - apiGroups:
-  - ""
+  - apiextensions.k8s.io
   resources:
-  # does this job really need to create jobs?
-  - jobs
+  - customresourcedefinitions
   verbs:
-  - create
   - delete
+  - get
+  - patch
+  resourceNames:
+  - kedifyconfigurations.install.kedify.io
+  - scalingpolicies.keda.kedify.io
 - apiGroups:
   - apiextensions.k8s.io
   resources:
   - customresourcedefinitions
   verbs:
   - create
-  - delete
-  - get
-  - patch
-#  can this be restricted to only the CRDs agent needs?
-#  resourceNames:
-#  - kedifyconfigurations.install.kedify.io
-#  - scalingpolicies.keda.kedify.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

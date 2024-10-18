@@ -32,7 +32,7 @@ data:
           enabled: false
           values: |-
             ---
-        mode: Adopt
+        mode: Disabled
         name: keda
         namespace: {{ .Release.Namespace }}
         telemetry:
